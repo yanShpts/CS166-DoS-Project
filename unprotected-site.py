@@ -6,6 +6,14 @@ app = FastAPI()
 
 ip_requests = {}
 
+def fibonacci(n):
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fibonacci(n-1) + fibonacci(n-2)
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     # Get the client's IP address
@@ -16,6 +24,9 @@ async def index(request: Request):
         ip_requests[client_ip] += 1
     else:
         ip_requests[client_ip] = 1
+
+    # Simulate a page load delay
+    fibonacci(23)
 
     # Get the hostname of the server
     hostname = socket.gethostname()
@@ -38,3 +49,7 @@ async def index(request: Request):
 </html>
 """
     return HTMLResponse(content=html_content, status_code=200)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
